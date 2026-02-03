@@ -1,0 +1,6 @@
+# Unversioned requirements for todo service
+fastapi
+uvicorn
+pydantic
+# for testing
+pytest
