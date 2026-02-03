@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request, Response
 
-import ..models
+from models import Todo, TodoCreate
 from persistence import TodoDao
 
 
@@ -66,10 +66,14 @@ def delete_todo(todo_id: int):
     :param todo_id: identifier of the todo to delete
 
     Return 204 (or 200 + message) if todo is deleted.
-    Return {what?} if todo is not found.
+    Return 404 if todo is not found.
     """
-    # TODO implement this method
-    raise HTTPException(status_code=500, detail="Not implemented yet")
+    existing = dao.get(todo_id)
+    if not existing:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    dao.delete(todo_id)
+    return
 
 
 @router.options("/")
