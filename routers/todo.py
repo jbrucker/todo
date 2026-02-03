@@ -73,7 +73,6 @@ def delete_todo(todo_id: int):
         raise HTTPException(status_code=404, detail="Todo not found")
     
     dao.delete(todo_id)
-    return
 
 
 @router.options("/")
