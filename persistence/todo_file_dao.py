@@ -9,9 +9,10 @@ from threading import Lock
 from typing import Dict, Iterable
 
 from models import Todo, TodoCreate
+import persistence
 
 
-class TodoDao:
+class TodoFileDao(persistence.base_todo_dao.TodoDao):
     """Persistence operations for Todo items.
 
     Args:

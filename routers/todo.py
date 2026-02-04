@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Request, Response
+# for longer status code names, use: from fastapi import status
+from http import HTTPStatus as status
 
-import ..models
+import models
 from persistence import TodoDao
 
 
@@ -10,14 +12,14 @@ dao = TodoDao("todo_data.json")
 router = APIRouter(prefix="/todos")
 
 
-@router.get("/", response_model=list[Todo])
+@router.get("/", response_model=list[models.Todo])
 def get_todos():
     """Get all todos."""
     return dao.get_all()
 
 
-@router.post("/", response_model=Todo, status_code=201)
-def create_todo(todo: TodoCreate, request: Request, response: Response):
+@router.post("/", response_model=models.Todo, status_code=status.CREATED)
+def create_todo(todo: models.TodoCreate, request: Request, response: Response):
     """Create and save a new todo. A unique ID is assigned."""
     created = dao.save(todo)
     # Return the location of the new todo.
@@ -28,7 +30,7 @@ def create_todo(todo: TodoCreate, request: Request, response: Response):
     return created
 
 
-@router.get("/{todo_id}", response_model=Todo)
+@router.get("/{todo_id}", response_model=models.Todo)
 def get_todo(todo_id: int):
     """Get a specific todo by id.
 
@@ -36,12 +38,12 @@ def get_todo(todo_id: int):
     """
     todo = dao.get(todo_id)
     if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
+        raise HTTPException(status_code=status.NOT_FOUND, detail="Todo not found")
     return todo
 
 
-@router.put("/{todo_id}", response_model=Todo)
-def update_todo(todo_id: int, todo: TodoCreate):
+@router.put("/{todo_id}", response_model=models.Todo)
+def update_todo(todo_id: int, todo: models.TodoCreate):
     """Update an existing Todo.
 
     :param todo_id: identifier of the todo to update
@@ -49,9 +51,9 @@ def update_todo(todo_id: int, todo: TodoCreate):
     """
     existing = dao.get(todo_id)
     if not existing:
-        raise HTTPException(status_code=404, detail="Todo not found")
+        raise HTTPException(status_code=status.NOT_FOUND, detail="Todo not found")
 
-    updated = Todo(
+    updated = models.Todo(
         id=todo_id,
         text=todo.text,
         done=todo.done,
@@ -59,7 +61,7 @@ def update_todo(todo_id: int, todo: TodoCreate):
     return dao.update(updated)
 
 
-@router.delete("/{todo_id}", status_code=204)
+@router.delete("/{todo_id}", status_code=status.OK)
 def delete_todo(todo_id: int):
     """Delete a Todo.
 
@@ -69,7 +71,7 @@ def delete_todo(todo_id: int):
     Return {what?} if todo is not found.
     """
     # TODO implement this method
-    raise HTTPException(status_code=500, detail="Not implemented yet")
+    raise HTTPException(status_code=status.NOT_IMPLEMENTED, detail="Not implemented")
 
 
 @router.options("/")
