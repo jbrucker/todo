@@ -16,10 +16,10 @@ RUN apt-get update && \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application source code. The actual target dir is /app/todo
-COPY  ./src  ./todo
+# Copy the application source code. The actual target dir is /app/
+COPY  ./src  .
 
 # Run the FastAPI application with Uvicorn.
 # "--reload" causes app to check for changes to Python code and dynamically reload.
 # Remove "--reload" arg for production use.
-CMD ["uvicorn", "todo.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

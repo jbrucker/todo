@@ -1,0 +1,7 @@
+This directory is where persisted "todo" data is stored.
+It should be mounted onto /app/data in the container,
+i.e. docker -v ./data:/app/data 
+
+Caveat: must use a **path** such as `./data` and not
+simply `-v data:/app/data` which Docker interprets as
+a **named volume** "data"
