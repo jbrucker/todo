@@ -8,7 +8,20 @@ from models import Todo, TodoCreate
 
 
 class TodoDao:
-    """Persistence operations for Todo items."""
+    """Persistence operations for Todo items.
+
+    Methods:
+        get(todo_id: int) -> Todo|None: Get a Todo by id.
+        get_all() -> list[Todo]:        Get all Todo items.
+        save(new_todo: TodoCreate) -> Todo: Save a new Todo.
+        update(todo: Todo) -> None:     Update an existing Todo.
+        delete(todo_id: int) -> None:   Delete a Todo by id.
+
+    Args:
+        storage_path: (str) a path or URL to the todo store.
+           For file-based storage this is path to the file.
+           For database, this may be a path or URL to database.
+    """
 
     @abstractmethod
     def get(self, todo_id: int) -> Todo | None:

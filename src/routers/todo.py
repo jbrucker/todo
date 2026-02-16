@@ -7,7 +7,7 @@ from persistence import TodoDao
 
 
 # Data Access Object (dao) provides persistence operations for todo.
-dao = TodoDao("todo_data.json")
+dao = TodoDao("data/todo_data.json")
 
 router = APIRouter(prefix="/todos")
 

@@ -9,21 +9,17 @@ from threading import Lock
 from typing import Dict, Iterable
 
 from models import Todo, TodoCreate
-import persistence
+from .base_todo_dao import TodoDao as BaseTodoDao
 
 
-class TodoFileDao(persistence.base_todo_dao.TodoDao):
+class TodoFileDao(BaseTodoDao):
     """Persistence operations for Todo items.
 
     Args:
-        filename (str): The JSON file to use for storage.
+        filename (str): The JSON file for todo data, must be writable.
         If the file does not exist, it will be created.
-    Methods:
-        get(todo_id: int) -> Todo|None: Get a Todo by id.
-        get_all() -> list[Todo]:        Get all Todo items.
-        save(new_todo: TodoCreate) -> Todo: Save a new Todo.
-        update(todo: Todo) -> None:     Update an existing Todo.
-        delete(todo_id: int) -> None:   Delete a Todo by id.
+    See:
+        base_todo_dao.TodoDao for method documentation.
     """
     def __init__(self, filename: str):
         self.filename = filename
