@@ -1,13 +1,15 @@
 from fastapi import APIRouter, HTTPException, Request, Response
 # for longer status code names, use: from fastapi import status
 from http import HTTPStatus as status
+from decouple import config
 
 import models
 from persistence import TodoDao
 
 
 # Data Access Object (dao) provides persistence operations for todo.
-dao = TodoDao("data/todo_data.json")
+todo_file = config("TODO_URL", default="data/todo_data.json")
+dao = TodoDao(todo_file)
 
 router = APIRouter(prefix="/todos")
 

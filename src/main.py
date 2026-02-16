@@ -2,6 +2,7 @@
 
 from fastapi import FastAPI
 from routers.todo import router as todo_router
+from routers.health import router as health_check
 
 # 'app' refers to FastAPI application instance.
 # Routes have been moved to `routers/todo.py` and are included below.
@@ -15,3 +16,4 @@ app = FastAPI(
     )
 
 app.include_router(todo_router)
+app.include_router(health_check)
