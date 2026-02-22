@@ -21,7 +21,7 @@ The tests will expect that and test for:
 - API docs are at `/api/openapi.json` and `/api/docs`.  See the `ROOT_PATH` variable in `tests/conftest.py`.
 - The Todo service urls are prefixed with `/api`, such as `GET /api/todos/{id}`.
 - The `POST /api/todos` endpoint will save a new todo to persistence and then return the `Location` header containing the relative URL of the new todo 
-- The `DELETE` endpoint returns 200 or 204 when its deletes a Todo, 404 if the todo is not found.
+- The `DELETE` endpoint returns 200 or 201 when its deletes a Todo, 404 if the todo is not found.
 
 
 ### Running the Tests

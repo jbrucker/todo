@@ -4,6 +4,3 @@ uvicorn
 pydantic
 # to access environment data
 python-decouple
-# for testing
-pytest
-requests

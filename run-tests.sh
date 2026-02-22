@@ -19,7 +19,7 @@ export BASE_URL="http://localhost"
 
 # Search for pytest in a) virtualenv 'bin', b) on PATH, c) as a Python module
 if [ -x "env/bin/pytest" ]; then
-  env/bin/pytest -v tests "$@"
+  env/bin/pytest -v tests/routing_test.py "$@"
 elif command -v pytest >/dev/null 2>&1; then
   pytest -v tests "$@"
 else

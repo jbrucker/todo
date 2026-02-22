@@ -1,6 +1,6 @@
 """Tests of nginx request handling."""
 
-from conftest import ROOT_PATH
+from config import ROOT_PATH
 
 
 def test_get_index(client):

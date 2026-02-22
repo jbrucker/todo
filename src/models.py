@@ -11,10 +11,10 @@ MIN_TEXT_LENGTH = 2
 
 class TodoCreate(BaseModel):
     """Information required to create a new Todo item.
-    
+
     The application will assign an ID when the Todo is created.
 
-    :param done: indicates if this Todo is completed or not. 
+    :param done: indicates if this Todo is completed or not.
     """
     text: str = Field(
         ...,

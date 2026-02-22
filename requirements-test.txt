@@ -1,0 +1,6 @@
+# Required packages for testing
+pytest
+requests
+
+# run-time requirements
++ requirements.txt
