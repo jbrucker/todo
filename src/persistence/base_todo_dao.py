@@ -41,6 +41,15 @@ class TodoDao:
         raise NotImplementedError
 
     @abstractmethod
+    def exists(self, todo_id: int) -> bool:
+        """Check if a Todo with the given id exists in persistent storage.
+
+        :param todo_id: The identifier of the todo to check.
+        :return: True if a Todo with the given id exists, False otherwise.
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def save(self, todo_create: TodoCreate) -> Todo:
         """Save a new Todo and assign it an id.
 

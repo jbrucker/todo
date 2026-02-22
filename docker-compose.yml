@@ -1,14 +1,13 @@
-# version: '3.9'
+name: jim-todo
+
 services:
-  todo:
+  todo-ws:
     build: .
-    container_name: todo
-    # A volume mount-binds ./src (on host) to /app/ (in container).
-    # This means that changes to code in "app" are immediately reflected in 
-    # the running container.
-    # Useful for development if 'CMD' includes the "--reload" option.
-    # This avoids mounting other directories in the container,
-    # such as backend/tests, backend/experiments.
+    # For live updates in development:
+    # 1. Use a volume to mount-bind ./src (on host) to /app/ (in container).
+    #    This means that changes to the code in ./src will 
+    #    be immediately visible in the container.
+    # 2. In 'CMD',  include the "--reload" option.
     # For production, you should remove this.
     volumes:
       - ./data:/app/data
@@ -17,6 +16,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      ROOT_PATH: /api
       # These values are defined in .env
       TODO_URL: ${TODO_URL}
       # Logging
@@ -36,7 +36,6 @@ services:
     # nginx:alpine is smaller than nginx:stable (52MB vs 199MB) and requires less memory.
     # nginx:alpine includes fewer nginx modules, fewer libraries, and musl libc instead of glibc.
     image: nginx:alpine
-    container_name: nginx_todo_gateway
     ports:
       - "80:80"
       - "443:443" # Reserved for HTTPS, not yet configured in nginx.
@@ -44,10 +43,9 @@ services:
       - ./nginx/conf:/etc/nginx:ro
       - ./nginx/html:/usr/share/nginx/html:ro
     depends_on:
-      - todo
+      - todo-ws
     networks:
       - todo-net
-
   
 networks:
   todo-net:

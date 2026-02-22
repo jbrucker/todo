@@ -25,10 +25,9 @@ def create_todo(todo: models.TodoCreate, request: Request, response: Response):
     """Create and save a new todo. A unique ID is assigned."""
     created = dao.save(todo)
     # Return the location of the new todo.
-    location = f"/todos/{created.id}"
-    # A cleaner way to get the location URL is reverse mapping.
-    # location = request.url_for("get_todo", todo_id=str(created.id))
-    response.headers["Location"] = location
+    # Use reverse mapping to ensure we can correct enternal URL.
+    location = request.url_for("get_todo", todo_id=created.id)
+    response.headers["Location"] = str(location)
     return created
 
 
@@ -70,10 +69,12 @@ def delete_todo(todo_id: int):
     :param todo_id: identifier of the todo to delete
 
     Return 204 (or 200 + message) if todo is deleted.
-    Return {what?} if todo is not found.
+    Return 404 if the todo id is not found.
     """
-    # TODO implement this method
-    raise HTTPException(status_code=status.NOT_IMPLEMENTED, detail="Not implemented")
+    if not dao.exists(todo_id):
+        raise HTTPException(status_code=status.NOT_FOUND, detail=f"Todo {todo_id} not found")
+    dao.delete(todo_id)
+    return {"message": f"Todo {todo_id} deleted."}
 
 
 @router.options("/")

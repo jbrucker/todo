@@ -6,11 +6,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Install netstat (net-tools) and ping (iputils-ping) for debugging.
-# 'curl' package also installs *many* others (> 15MB downloads)
+# 'curl' package installs *many* others (> 15MB downloads) so skip it.
 # Better to install curl as needed in a running container
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends net-tools iputils-ping && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends net-tools iputils-ping && \
+#    rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install dependencies
 COPY requirements.txt ./

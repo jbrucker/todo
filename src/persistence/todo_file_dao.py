@@ -78,12 +78,12 @@ class TodoFileDao(BaseTodoDao):
         """Get all Todo items."""
         return list(self.todos.values())
 
-    def save(self, todo_create: TodoCreate) -> Todo:
-        """Save a new Todo and assign it an id.
+    def exists(self, todo_id: int) -> bool:
+        """See :meth:`BaseTodoDao.exists`"""
+        return todo_id in self.todos
 
-        :param todo_create: a TodoCreate object with info for the new Todo.
-        :return: The created Todo with its assigned id.
-        """
+    def save(self, todo_create: TodoCreate) -> Todo:
+        """See :meth:`BaseTodoDao.save`."""
         todo_id = self._next_id()
         # model_dump is provided by Pydantic Model class.
         todo = Todo(id=todo_id, **todo_create.model_dump())
