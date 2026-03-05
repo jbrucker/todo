@@ -1,6 +1,7 @@
 """A Data Access Object (DAO) for CRUD operations on Todo items.
 
 Implements thread-safe file-based persistence using JSON.
+TodoFileDao is a Singleton to avoid inconsistencies in a web app with multiple worker threads.
 """
 import json
 import logging
@@ -21,14 +22,29 @@ class TodoFileDao(BaseTodoDao):
     See:
         base_todo_dao.TodoDao for method documentation.
     """
+    _instance = None
+    _instance_lock = Lock()
+
+    def __new__(cls, filename: str):
+        if cls._instance is None:
+            with cls._instance_lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self, filename: str):
+        # prevent re-initialization on subsequent constructor calls
+        if getattr(self, "_initialized", False):
+            return
+
         self.filename = filename
         self.lock = Lock()
         # read todos into memory.
         self.todos = self._read_all()
         # ensure that todo ids always increase to avoid race condition
         self._start_id = 1
-
+        # A flag to prevent re-initializing a Singleton instance
+        self._initialized = True
 
     def _read_all(self) -> Dict[int, Todo]:
         """Read all Todo items from a JSON file.

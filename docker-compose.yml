@@ -1,4 +1,4 @@
-name: jim-todo
+name: todo
 
 services:
   todo-ws:
@@ -47,6 +47,25 @@ services:
     networks:
       - todo-net
   
+  promtail:
+    # Promtail scrapes logs from Nginx, formats them, and sends to Loki.
+    image: grafana/promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      # /var/lib/docker/containers - container files containing the actual log files
+      # /var/run/docker.sock - provides metadata such as labels & names
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # According to sources, you don't need to mount /var/lib/docker/containers
+      # - /var/lib/docker/containers:/var/lib/docker/containers:ro
+
+    depends_on:
+      - loki
+    networks:
+      - todo-net
+
+  
   loki:
     # Loki collects logs from other containers.
     image: grafana/loki
@@ -55,17 +74,23 @@ services:
       - "3100:3100"
     networks:
       - todo-net
-  
-  promtail:
-    # Promtail scrapes logs from Nginx, formats them, and sends to Loki.
-    image: grafana/promtail
-    command: -config.file=/etc/promtail/config.yml
+
+  grafana:
+    # Data visualization tool.  Default listening port number is 3000.
+    # To change port number use environment variable GF_SERVER_HTTP_PORT
+    image: grafana/grafana:latest
+    # Container name merely for convenience in accessing logs.  Ok to remove.
+    container_name: todo-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      # Initial admin password. Once set in grafana, this has no effect. 
+      GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
-      # /var/lib/docker/containers - container files containing the actual log files
-      # /var/run/docker.sock - provides metadata such as labels & names
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./promtail/config.yml:/etc/promtail/config.yml:ro
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - loki
     networks:
@@ -79,3 +104,6 @@ networks:
 # *internal container ports* not the host-mapped ports.
 # Hence, nginx-exporter scrapes nginx on port 80 instead of 8080.
 # They also use internal DNS names, like 'nginx' or 'backend'.
+
+volumes:
+  grafana_data:

@@ -12,8 +12,14 @@ scrape_configs:
   - job_name: nginx
     docker_sd_configs:
       - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
 
+    # This uses "Docker metadata discovery" to find the correct container to scrape.
+    # Avoids accidentally scraping log data from a different container.
     relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/todo-nginx-1'
+        action: keep
       - source_labels: ['__meta_docker_container_name']
         target_label: 'container'
 
@@ -24,19 +30,19 @@ scrape_configs:
       # Parse your inner Nginx JSON log line
       - json:
           expressions:
-            time:
-            remote_addr:
-            x_forwarded_for:
-            request_method:
-            request_uri:
-            status:
-            body_bytes_sent:
-            request_time:
-            http_referer:
-            http_user_agent:
+            time: time
+            remote_addr: remote_addr
+            x_forwarded_for: x_forwarded_for
+            request_method: request_method
+            request_uri: request_uri
+            status: status
+            body_bytes_sent: body_bytes_sent
+            request_time: request_time
+            http_referer: http_referer
+            http_user_agent: http_user_agent
 
       # Promote only low-cardinality labels
       - labels:
           container:
           status:
-          request_method
+          request_method:
