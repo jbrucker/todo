@@ -32,7 +32,7 @@ services:
 
   nginx:
     # Nginx web server as proxy. 
-    # Listen on port 8080 on the native host, mapped to port 80 in container.
+    # Listen on port 80 on the native host, mapped to port 80 in container.
     # nginx:alpine is smaller than nginx:stable (52MB vs 199MB) and requires less memory.
     # nginx:alpine includes fewer nginx modules, fewer libraries, and musl libc instead of glibc.
     image: nginx:alpine
@@ -48,7 +48,8 @@ services:
       - todo-net
   
   loki:
-    image: grafana/loki:stable
+    # Loki collects logs from other containers.
+    image: grafana/loki
     command: -config.file=/etc/loki/local-config.yaml
     ports:
       - "3100:3100"
@@ -56,11 +57,15 @@ services:
       - todo-net
   
   promtail:
-    image: grafana/promtail:stable
+    # Promtail scrapes logs from Nginx, formats them, and sends to Loki.
+    image: grafana/promtail
     command: -config.file=/etc/promtail/config.yml
     volumes:
+      # /var/lib/docker/containers - container files containing the actual log files
+      # /var/run/docker.sock - provides metadata such as labels & names
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./promtail/config.yml:/etc/promtail/config.yml:ro
     depends_on:
       - loki
     networks:

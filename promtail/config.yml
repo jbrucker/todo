@@ -1,0 +1,42 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: nginx
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        target_label: 'container'
+
+    pipeline_stages:
+      # Remove Docker outer JSON wrapper
+      - docker: {}
+
+      # Parse your inner Nginx JSON log line
+      - json:
+          expressions:
+            time:
+            remote_addr:
+            x_forwarded_for:
+            request_method:
+            request_uri:
+            status:
+            body_bytes_sent:
+            request_time:
+            http_referer:
+            http_user_agent:
+
+      # Promote only low-cardinality labels
+      - labels:
+          container:
+          status:
+          request_method
