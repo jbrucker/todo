@@ -1,11 +1,14 @@
 from fastapi import APIRouter, HTTPException, Request, Response
 # for longer status code names, use: from fastapi import status
 from http import HTTPStatus as status
+import logging
 from decouple import config
 
 import models
 from persistence import TodoDao
 
+
+logger = logging.getLogger(__name__)
 
 # Data Access Object (dao) provides persistence operations for todo.
 todo_file = config("TODO_URL", default="data/todo_data.json")
@@ -26,8 +29,17 @@ def create_todo(todo: models.TodoCreate, request: Request, response: Response):
     created = dao.save(todo)
     # Return the location of the new todo.
     # Use reverse mapping to ensure we can correct enternal URL.
-    location = request.url_for("get_todo", todo_id=created.id)
+    location_url = request.url_for("get_todo", todo_id=created.id)
+    location = location_url.path
+    if location.startswith("http"):
+        # Screwed up. Path should not include the scheme and host.
+        import re
+        match = re.search(r"https?://[^/]*(/.*)", location)
+        if match is not None: location = match.group(1)
+    # This doesn't work. It doesn't includes the API root path.
+    # location = router.url_path_for("get_todo", todo_id=created.id)
     response.headers["Location"] = str(location)
+    logger.warning(f"Created todo with id {created.id} at {location}")
     return created
 
 
@@ -39,7 +51,7 @@ def get_todo(todo_id: int):
     """
     todo = dao.get(todo_id)
     if not todo:
-        raise HTTPException(status_code=status.NOT_FOUND, detail="Todo not found")
+        raise HTTPException(status_code=status.NOT_FOUND, detail=f"Todo {todo_id} not found")
     return todo
 
 
@@ -52,7 +64,7 @@ def update_todo(todo_id: int, todo: models.TodoCreate):
     """
     existing = dao.get(todo_id)
     if not existing:
-        raise HTTPException(status_code=status.NOT_FOUND, detail="Todo not found")
+        raise HTTPException(status_code=status.NOT_FOUND, detail=f"Todo {todo_id} not found")
 
     updated = models.Todo(
         id=todo_id,
@@ -74,6 +86,9 @@ def delete_todo(todo_id: int):
     if not dao.exists(todo_id):
         raise HTTPException(status_code=status.NOT_FOUND, detail=f"Todo {todo_id} not found")
     dao.delete(todo_id)
+    if dao.exists(todo_id):
+        raise HTTPException(status_code=status.SERVICE_UNAVAILABLE, 
+                            detail=f"Persistence FAILed to delete Todo {todo_id}")
     return {"message": f"Todo {todo_id} deleted."}
 
 

@@ -18,5 +18,65 @@
     "text": "Run the todo service in a container with Nginx and uvicorn",
     "done": false,
     "id": 4
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 5
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 6
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 7
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 8
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 9
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 10
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 11
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 12
+  },
+  {
+    "text": "Test todo",
+    "done": false,
+    "id": 13
+  },
+  {
+    "text": "Test create todo 2026-02-23 17:32:30.650987",
+    "done": false,
+    "id": 14
+  },
+  {
+    "text": "Test create todo 2026-02-23 17:32:34.509170",
+    "done": false,
+    "id": 15
+  },
+  {
+    "text": "Test create todo 2026-02-23 17:32:37.607349",
+    "done": false,
+    "id": 16
   }
 ]

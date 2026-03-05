@@ -2,7 +2,9 @@
 **/venv/
 /CONFIG.md
 # Wiki is a separate repo
-wiki/
+/wiki/
+# Tests is a separate repo
+/tests/
 
 # environment variables
 .env

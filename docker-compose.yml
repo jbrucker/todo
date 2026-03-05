@@ -24,7 +24,7 @@ services:
     healthcheck:
       # Use urllib.request instead of curl. curl may not be installed in Docker image.
       test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" ]
-      interval: 30s
+      interval: 300s
       timeout: 5s
       retries: 3
     networks:
@@ -47,6 +47,25 @@ services:
     networks:
       - todo-net
   
+  loki:
+    image: grafana/loki:stable
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    networks:
+      - todo-net
+  
+  promtail:
+    image: grafana/promtail:stable
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml:ro
+    depends_on:
+      - loki
+    networks:
+      - todo-net
+
 networks:
   todo-net:
     driver: bridge

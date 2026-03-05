@@ -26,6 +26,9 @@ class TodoFileDao(BaseTodoDao):
         self.lock = Lock()
         # read todos into memory.
         self.todos = self._read_all()
+        # ensure that todo ids always increase to avoid race condition
+        self._start_id = 1
+
 
     def _read_all(self) -> Dict[int, Todo]:
         """Read all Todo items from a JSON file.
@@ -57,15 +60,17 @@ class TodoFileDao(BaseTodoDao):
                 serializable = [t.model_dump() for t in todos]
                 json.dump(serializable, f, indent=2)
 
+
     def _next_id(self) -> int:
         """Generates an available id for a new Todo.
 
         :return: An integer id not currently used by any Todo.
         """
-        if not self.todos:
-            return 1
-        # the todo keys are the ids
-        return max(self.todos.keys()) + 1
+        with self.lock:
+            if not self.todos:
+                return 1
+            # the todo keys are the ids
+            return max(self.todos.keys()) + 1
 
     def get(self, todo_id: int) -> Todo | None:
         """Get a Todo by its id.

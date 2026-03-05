@@ -12,23 +12,30 @@ BASE_URL = os.environ.get("BASE_URL", "http://localhost")
 
 
 class _SimpleClient:
-    """Wrapper around `requests` to provide a simple interface for tests."""
+    """Wrapper around `requests` to provide a simple interface for tests.
+    
+    :param base_url: The base URL of the web service to test, e.g. "http://localhost:8000"
+    :param path: the request path to append to base_url, beginning with slash, e.g. "/api/todos".
+    """
     def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
 
     def get(self, path: str, **kwargs):
-        p = path.lstrip("/")
-        url = f"{self.base_url}/{p}" if p else f"{self.base_url}/"
+        if not path.startswith("/"):
+            path = "/" + path
+        url = f"{self.base_url}{path}"
         return requests.get(url, **kwargs)
 
     def post(self, path: str, **kwargs):
-        p = path.lstrip("/")
-        url = f"{self.base_url}/{p}" if p else f"{self.base_url}/"
+        if not path.startswith("/"):
+            path = "/" + path
+        url = f"{self.base_url}{path}"
         return requests.post(url, **kwargs)
 
     def delete(self, path: str, **kwargs):
-        p = path.lstrip("/")
-        url = f"{self.base_url}/{p}" if p else f"{self.base_url}/"
+        if not path.startswith("/"):
+            path = "/" + path
+        url = f"{self.base_url}{path}"
         return requests.delete(url, **kwargs)
 
 

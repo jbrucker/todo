@@ -1,7 +1,7 @@
 #!/bin/bash
 # Run the Todo service
 
-ROOT_PATH=/api
+export ROOT_PATH=/api
  
 # Activate virtual environment
 activate_venv() {
@@ -16,4 +16,4 @@ if [[ ! -v VIRTUAL_ENV ]]; then
 fi
 
 cd src
-uvicorn main:app --port 8000 --reload --root-path $ROOT_PATH
+ROOT_PATH=$ROOT_PATH uvicorn main:app --port 80 --reload
