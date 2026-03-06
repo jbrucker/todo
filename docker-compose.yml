@@ -1,4 +1,4 @@
-name: jim-todo
+name: todo
 
 services:
   todo-ws:
@@ -13,8 +13,8 @@ services:
       - ./data:/app/data
     # For production, do not expose port 8000. 
     # Instead, require clients to use nginx as proxy.
-    ports:
-      - "8000:8000"
+    #ports:
+    #  - "8000:8000"
     environment:
       ROOT_PATH: /api
       # These values are defined in .env
@@ -46,7 +46,18 @@ services:
       - todo-ws
     networks:
       - todo-net
-  
+
+  dozzle:
+    # Log visualizer
+    image: amir20/dozzle:latest
+    #container_name: log-viewer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Grant read-only access to Docker
+    ports:
+      - "8888:8080"
+    environment:
+      - DOZZLE_LEVEL=info
+ 
 networks:
   todo-net:
     driver: bridge

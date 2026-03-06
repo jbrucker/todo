@@ -4,11 +4,13 @@ import os
 from fastapi import FastAPI
 from routers.todo import router as todo_router
 from routers.health import router as health_check
+import logging_config
 
-# Prefix for request routing
 
 # Prefix for API docs
 API_ROOT = os.getenv("ROOT_PATH", "")
+
+logging_config.configure_logging()
 
 # 'app' refers to FastAPI application instance.
 # Routes have been moved to `routers/todo.py` and are included below.
