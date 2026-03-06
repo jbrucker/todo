@@ -6,9 +6,11 @@ from decouple import config
 import models
 from persistence import TodoDao
 
+from logging_config import get_logger
+logger = get_logger(__name__)
 
 # Data Access Object (dao) provides persistence operations for todo.
-todo_file = config("TODO_URL", default="data/todo_data.json")
+todo_file: str = config("TODO_URL", default="data/todo_data.json")  # noqa: S105
 dao = TodoDao(todo_file)
 
 router = APIRouter(prefix="/todos")
@@ -39,6 +41,8 @@ def get_todo(todo_id: int):
     """
     todo = dao.get(todo_id)
     if not todo:
+        # TODO: structured logging. See https://www.structlog.org/en/stable/ for ideas on how to log structured data.
+        logger.warning("Todo not found", todo_id=todo_id)
         raise HTTPException(status_code=status.NOT_FOUND, detail="Todo not found")
     return todo
 
@@ -74,6 +78,7 @@ def delete_todo(todo_id: int):
     if not dao.exists(todo_id):
         raise HTTPException(status_code=status.NOT_FOUND, detail=f"Todo {todo_id} not found")
     dao.delete(todo_id)
+    logger.info("Todo deleted", todo_id=todo_id)
     return {"message": f"Todo {todo_id} deleted."}
 
 
