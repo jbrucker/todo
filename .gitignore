@@ -2,7 +2,9 @@
 **/venv/
 /CONFIG.md
 # Wiki is a separate repo
-wiki/
+/wiki/
+/tests/
+data/todo_data.json
 
 # environment variables
 .env
