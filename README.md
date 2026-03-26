@@ -1,10 +1,21 @@
 ## Todo REST Service
-````markdown
-## Todo REST Service
 
 A RESTful web service using FastAPI.
+
 The service handles HTTP GET, POST, UPDATE, DELETE, and OPTIONS
 methods for a "/todo" endpoint.
+
+### Available URLs when running with docker-compose
+
+| URL                         | Service            |
+|-----------------------------|--------------------|
+| http://127.0.0.1            | Nginx proxy for todo |
+| /api/todos/                 | Todo Web Service base |
+| /api/todos/docs/            | OpenAPI docs for WS endpoints |
+| /api/health/                | Health check returns 200 | 
+| /api/headers/               | Endpoint prints all request headers | 
+| http://127.0.0.1:8888/      | Dozzle Log Viewer  |
+
 
 ### Code Organization
 
@@ -13,6 +24,48 @@ methods for a "/todo" endpoint.
 | `models.py`          | Classes for Todo and TodoCreate. Used for serialization and input validation. |
 | `persistence.py`     | `TodoDao` class provides persistence for Todo objects. |
 | `main.py`            | FastAPI code to run the application. |
+
+## Create External Docker Network for cross-project communication.
+
+This is only for the case where authentik and todo are both running
+locally in separate projects with separate `docker-compose.yml` files.
+
+The external network is defined in `docker-compose.yml` like this:
+
+```yml
+network:
+  auth-net:
+    external: true
+  todo-net:
+    driver: bridge
+```
+
+Attach a service to the network (only as needed) in the service definition:
+
+```yml
+nginx:
+  ...
+  networks:
+    - auth-net
+    - todo-net
+```
+
+1.  **One time** create the network.
+    ```shell
+    docker network create auth-net
+    ```
+
+2.  Confirm it exists:
+    ```shell
+    docker network ls
+    ```
+
+3.  Inspect it (if containers are running it'll include services):
+    ```shell
+    docker network inspec auth-net
+    ```
+ 
+   
 
 ## How to Build and Run
 

@@ -46,13 +46,14 @@ services:
       - todo-ws
     networks:
       - todo-net
+      - auth-net
 
   dozzle:
     # Log visualizer
     image: amir20/dozzle:latest
     #container_name: log-viewer
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro # Grant read-only access to Docker
+      - /var/run/docker.sock:/var/run/docker.sock:ro # read-only access to Docker
     ports:
       - "8888:8080"
     environment:
@@ -61,8 +62,11 @@ services:
 networks:
   todo-net:
     driver: bridge
+  auth-net:
+    external: true
 
 # Containers on the same network (todo-net) communicate using the
 # *internal container ports* not the host-mapped ports.
-# Hence, nginx-exporter scrapes nginx on port 80 instead of 8080.
+# Hence, nginx-exporter scrapes nginx on port 80 (internal port of nginx container),
+# not the external port that port 80 may be mapped to.
 # They also use internal DNS names, like 'nginx' or 'backend'.

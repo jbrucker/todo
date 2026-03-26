@@ -1,4 +1,5 @@
 #!/bin/bash
+# Run the todo application server natively (without docker-compose).
  
 # Activate virtual environment
 activate_venv() {

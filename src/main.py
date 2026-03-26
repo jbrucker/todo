@@ -4,6 +4,7 @@ import os
 from fastapi import FastAPI
 from routers.todo import router as todo_router
 from routers.health import router as health_check
+from routers.headers import router as headers_router
 import logging_config
 
 
@@ -30,3 +31,4 @@ app = FastAPI(
 
 app.include_router(todo_router)
 app.include_router(health_check)
+app.include_router(headers_router)

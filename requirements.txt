@@ -1,5 +1,6 @@
 # Unversioned requirements for todo service
 fastapi
+jinja2
 uvicorn
 pydantic
 # to access environment data

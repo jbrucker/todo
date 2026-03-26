@@ -28,7 +28,7 @@ def create_todo(todo: models.TodoCreate, request: Request, response: Response):
     created = dao.save(todo)
     # Return the location of the new todo.
     # Use reverse mapping to ensure we can correct enternal URL.
-    location = request.url_for("get_todo", todo_id=created.id)
+    location = request.url_for("get_todo", todo_id=created.id).path
     response.headers["Location"] = str(location)
     return created
 
