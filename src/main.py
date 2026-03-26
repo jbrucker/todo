@@ -8,7 +8,7 @@ from routers.headers import router as headers_router
 import logging_config
 
 
-# Prefix for API docs
+# Prefix for API endpoint paths and OpenAPI docs.
 API_ROOT = os.getenv("ROOT_PATH", "")
 
 logging_config.configure_logging()

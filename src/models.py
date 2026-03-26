@@ -1,8 +1,8 @@
 """Models for object serialization and data validation in the app.
 
-Define Pydantic models for Todo items and Todo creation requests.
-Pydantic is a library for data validation and serialization using
-Python type annoatations. It is often used with FastAPI and SqlAlchemy..
+Define Pydantic models for Todo items, authenticated users, and Todo creation
+requests. Pydantic is a library for data validation and serialization using
+Python type annotations. It is often used with FastAPI and SQLAlchemy.
 """
 from pydantic import BaseModel, Field, field_validator
 
@@ -42,3 +42,17 @@ class Todo(TodoCreate):
     """A Todo item with an ID."""
     id: int
     # other fields inherited from TodoCreate
+
+
+class User(BaseModel):
+    """Authenticated user information extracted from a validated JWT."""
+
+    subject: str = Field(..., alias="sub")
+    username: str
+    email: str | None = None
+    name: str | None = None
+    groups: list[str] = Field(default_factory=list)
+
+    model_config = {
+        "populate_by_name": True,
+    }

@@ -7,3 +7,4 @@ pydantic
 python-decouple
 # for structured logging using JSON
 structlog
+PyJWT[crypto]
