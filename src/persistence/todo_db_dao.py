@@ -77,6 +77,13 @@ class TodoSqliteDao(TodoDao):
                 Todo(id=int(r["id"]), text=r["text"], done=bool(r["done"]))
                 for r in rows
             ]
+        
+    def exists(self, todo_id: int) -> bool:
+        cur = self._conn.execute(
+                "SELECT id FROM todos WHERE id = ?", (todo_id,)
+            )
+        row = cur.fetchone()
+        return row is not None
 
     def save(self, todo_create: TodoCreate) -> Todo:
         with self._lock:

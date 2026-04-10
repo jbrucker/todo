@@ -5,6 +5,7 @@ from models import TodoCreate, Todo
 
 
 def test_save_and_get(tmp_path, monkeypatch):
+    """Can save a todo and then get it back by id."""
     file = tmp_path / "todos.json"
     dao = TodoDao(str(file))
 
@@ -27,6 +28,7 @@ def test_save_and_get(tmp_path, monkeypatch):
 
 
 def test_get_all_and_multiple_saves(tmp_path, monkeypatch):
+    """Can get all todos and ids are assigned correctly."""
     file = tmp_path / "todos.json"
     dao = TodoDao(str(file))
 
@@ -46,6 +48,7 @@ def test_get_all_and_multiple_saves(tmp_path, monkeypatch):
 
 
 def test_update_existing_and_missing(tmp_path, monkeypatch):
+    """Update changes an existing todo and raises exception if todo id is missing."""
     file = tmp_path / "todos.json"
     dao = TodoDao(str(file))
 
@@ -58,12 +61,13 @@ def test_update_existing_and_missing(tmp_path, monkeypatch):
     got = dao.get(saved.id)
     assert got is not None and got.done is True
 
-    # update missing should raise
+    # update missing should raise exception
     with pytest.raises(ValueError):
         dao.update(Todo(id=999, text="X", done=False))
 
 
 def test_delete_existing_and_missing(tmp_path, monkeypatch):
+    """Can delete existing todo and deleting missing id raises exception."""
     file = tmp_path / "todos.json"
     dao = TodoDao(str(file))
 

@@ -28,7 +28,7 @@ class TodoCreate(BaseModel):
        description="Indicates if this Todo is completed or not")
 
     @field_validator("text")
-    def validate_text(cls, v: str) -> str:
+    def validate_text(self, v: str) -> str:
         """Ensure `text` field is at least MIN_TEXT_LENGTH characters and not blank."""
         if not isinstance(v, str):
             raise TypeError("text must be a string")
@@ -36,6 +36,7 @@ class TodoCreate(BaseModel):
         if len(v) < MIN_TEXT_LENGTH:
             raise ValueError(f"text must be at least {MIN_TEXT_LENGTH} characters long")
         return v
+    
 
 
 class Todo(TodoCreate):

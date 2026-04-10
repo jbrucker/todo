@@ -14,7 +14,7 @@ def configure_logging():
             # Can be long, since it includes the full stack trace.
             structlog.dev.set_exc_info,
             structlog.processors.TimeStamper(fmt="iso"),
-            # JSON formatting 
+            # JSON formatting
             structlog.processors.JSONRenderer()
         ],
         logger_factory=structlog.PrintLoggerFactory(),
