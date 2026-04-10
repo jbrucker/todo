@@ -39,7 +39,7 @@ class TodoFileDao(BaseTodoDao):
                            "Returning an empty todo list.")
             return todos
         with self.lock:
-            with open(self.filename, "r") as file:
+            with open(self.filename, "r", encoding="utf-8") as file:
                 for todo_data in json.load(file):
                     todo_id = todo_data["id"]
                     # Use Pydantic to validate and instantiate the model.
@@ -52,7 +52,7 @@ class TodoFileDao(BaseTodoDao):
         """Write all Todo items to the JSON file."""
         # TODO: should write to a temp file and then rename to avoid data loss.
         with self.lock:
-            with open(self.filename, "w") as f:
+            with open(self.filename, "w", encoding="utf-8") as f:
                 # Convert Pydantic Todo models to plain dicts before dumping.
                 serializable = [t.model_dump() for t in todos]
                 json.dump(serializable, f, indent=2)
