@@ -6,11 +6,13 @@ from routers.todo import router as todo_router
 from routers.health import router as health_check
 import logging_config
 
+# Configure logging before importing ANY modules that use logging or config has no effect
+# due to cache_on_first_use=True in the logging config.
+logging_config.configure_logging()
 
 # Prefix for API docs
 API_ROOT = os.getenv("ROOT_PATH", "")
 
-logging_config.configure_logging()
 
 # 'app' refers to FastAPI application instance.
 # Routes have been moved to `routers/todo.py` and are included below.
