@@ -7,4 +7,3 @@ from .todo_file_dao import TodoFileDao
 
 # Export the concrete file-backed DAO as the public `TodoDao` symbol.
 TodoDao = TodoFileDao
-    
